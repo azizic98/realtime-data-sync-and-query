@@ -1,0 +1,58 @@
+version: '3.9'
+services:
+
+  db:
+    image: postgres
+    container_name: db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+    command:
+      - "-c"
+      - "config_file=/etc/postgresql/postgresql.conf"
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    ports:
+    - 6379:6379
+    - 8001:8001
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
+
+  debezium:
+    image: debezium/server:2.6
+    volumes:
+      - ./conf:/debezium/conf
+    environment:
+      - LOG_LEVEL=DEBUG
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  fastapi:
+    build:
+      context: .
+    container_name: fastapi
+    ports:
+    - 8000:8000
+    depends_on:
+      - db
+      - redis
+      - debezium
+
+volumes:
+  pg_data:
+  redis_data:
