@@ -6,7 +6,7 @@ This is a Dockerized application that integrates **PostgreSQL**, **Redis**, **De
 
 - [Technologies Used](#technologies-used)
 - [Setup and Installation](#setup-and-installation)
-- [Functionality](#functionality)
+- [Features](#features)
 - [API Endpoints](#api-endpoints)
 - [Sample Data](#sample-data)
 - [License](#license)
