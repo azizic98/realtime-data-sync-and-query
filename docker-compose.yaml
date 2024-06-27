@@ -14,6 +14,8 @@ services:
       - pg_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/create_tables.sql
       - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./fake_outlets.csv:/docker-entrypoint-initdb.d/fake_outlets.csv
+      - ./fake_reporters.csv:/docker-entrypoint-initdb.d/fake_reporters.csv
     command:
       - "-c"
       - "config_file=/etc/postgresql/postgresql.conf"
